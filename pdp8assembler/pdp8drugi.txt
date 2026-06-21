@@ -1,0 +1,27 @@
+; y = a + (a+1) + ... +  b
+; cilj je povecavati a dok nije jednako B
+; ovo je neka vrsta while/for petlje gdje je uslov da a nije jednako b 
+
+200 LDA 251 - unijecemo b u akumulator
+201 CMA     - i dobicemo - b sto ce nam pomoci za poredjenje
+202 ADD 250 - dodacemo a (unutra je sad a - b)
+203 SNA     - u slucaju da je akumulator negativan nismo zadovoljili uslov (a je i dalje manje od b)
+; znaci ovdje je cilj da sabiramo a i negativno b sve dok ne bude 0 jer ce tad bit jednaki
+204 BUN 212 - ako budu jednaki i SNA ne bude radilo (jer 0 nije negativna), idemo na kraj programa
+205 LDA 252 - ovdje cemo ucitati sumu koju smo imali do sad (trenutno je 0)
+206 ADD 250 - dodacemo joj trenutno a -> y = y + a
+207 STA 252 - sacuvacemo je u memoriju i idemo y <- ac 
+208 LDA 250 - ucitacemo a ponovo u akumulator
+209 INC     - povecati ga za 1 (a++)
+210 STA 250 - cuvamo novo a na lokaciji gdje je bilo staro a
+211 BUN 200 - i vracamo se na pocetak programa da bismo opet prosli kroz petlju i provjerili uslov
+
+212 LDA 252 - dosadasnju sumu ucitamo iz memorije u akumulator
+213 ADD 251 - dodajemo poslednji broj b u ac (jer je u ovom trenutku a postalo jednako b i nije uslo u petlju)
+214 STA 252 - zatim cemo konacan izraz sacuvati u y (lokacija 252)
+215 HLT     - ovdje zavrsavamo program i stopiramo rad masine
+
+
+250 DEC 14  - promjenljiva A (odakle pocinje sabiranje)
+251 DEC 21  - promjenljiva B (gornja granica dokle sabiramo)
+252 DEC 0   - promjenljiva Y (mjesto gdje se cuva konacna suma)

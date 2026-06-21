@@ -1,0 +1,31 @@
+; Zadatak 3. Sastaviti program koji racuna sumu clanova niza od 10 brojeva na lokacije 1001-1010.
+; cilj nam je da idemo kroz niz i sabiramo elemente koristeci nas brojac j (lokacija 998)
+; ovo je petlja gdje provjeravamo uslov da li je nas brojac stigao do duzine niza (n)
+
+900 LDA 1000 - unijecemo duzinu niza n (10) u akumulator
+901 CMA      - i dobicemo -n sto nam sluzi da ga uporedimo sa nasim brojacem j
+902 ADD 998  - dodacemo trenutnu vrijednost j (unutra je sad j - n)
+903 SNA      - u slucaju da je akumulator negativan (j je i dalje manje od n), idemo u petlju
+904 BUN 915  - ako dodje do 0, znaci da su jednaki i j je stiglo do kraja, pa skacemo na kraj
+905 LDA 1001 - ucitavamo pocetnu adresu niza (broj 1001) u akumulator
+906 ADD 998  - dodacemo joj nas brojac j (tako racunamo adresu tekuceg clana niza, npr. 1001 + 0 = 1001)
+907 STA 997  - i sacuvacemo tu izracunatu adresu u lokaciju 997 (tu nam je tekuci clan)
+908 LDA* 997 - posto u 997 pise adresa (npr. 1001), zvjezdica (*) kaze 'idi na tu adresu 1001 i uzmi pravi broj odatle'
+909 ADD 999  - dodacemo taj broj na nasu dosadasnju sumu koja je u 999
+910 STA 999  - i sacuvacemo novu sumu nazad u lokaciju 999
+911 LDA 998  - ucitacemo nas brojac j ponovo u akumulator
+912 INC      - povecacemo ga za 1 (j++) da bismo presli na sledeci element
+913 STA 998  - cuvamo to novo uvecano j na njegovu lokaciju 998
+914 BUN 900  - i vracamo se na pocetak programa da ponovo provjerimo uslov petlje
+915 HLT      - ovdje zavrsavamo program jer smo sabrali sve clanove
+
+
+997 DEC 1001 - lokacija gdje racunamo i cuvamo adresu tekuceg clana niza
+998 DEC 0    - nas brojac j koji krece od 0 i povecava se u svakom krugu (j++)
+999 DEC 0    - promjenljiva Suma gdje sakupljamo i cuvamo krajnji rezultat
+1000 DEC 10  - duzina niza n (broj elemenata koje moramo sabrati)
+1001 DEC 10  - prvi clan niza (nalazi se bas na adresi 1001)
+1002 DEC 5   - drugi clan niza
+1003 DEC 14  - treci clan niza
+…            - i tako dalje
+1010 DEC 12  - deseti i poslednji clan niza

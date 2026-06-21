@@ -1,0 +1,69 @@
+; Izraz y = a + b + 10 ukoliko je c manje od 0.
+; Inace je y = a*a + b*b + 100.
+
+200 LDA 252 - ucitacemo c i provjeriti je li manja od 0
+201 SNA     - is ac negative, ako je c manje od 0, preskacemo sljedecu naredbu
+202 BUN 208 - u slucaju da je c vece ili 0 radimo ovo (idemo na else dio na adresi 208)
+
+; prvi dio koda dje cemo provjeriti slucaj za c < 0:
+203 LDA 250 - ovdje cemo dodati a (odnosno ucitavamo a u akumulator)
+204 ADD 251 - zatim cemo dodati i b i imati a + b unutar akumulatora
+205 ADD 254 - i sabracemo to sa 10 i dobiti nas izraz a+b+10
+206 STA 253 - u adresi sacuvanoj za y cemo upisati a+b+10 jer je c < 0
+207 BUN 218 - posto smo sve obavili, idemo na 218, odnosno kraj programa
+
+; opet komentar, ovo je ako je c 0 ili vece od 0:
+208 LDA 250 - onda ucitavamo a u akumulator
+209 BSA 300 - i idemo na potprogram za kvadrat (skacemo na adresu 300)
+210 STA 256 - cuvacemo na 256 izraz a na kvadrat koji nam je potprogram vratio
+211 LDA 251 - zatim ucitamo b u akumulator
+212 BSA 300 - pozivamo potprogram za mnozenje opet da nam izracuna kvadrat od b
+213 STA 257 - na adresi 257 imamo kvadrat od b koji smo upravo izracunali
+214 LDA 256 - sad ucitamo a na kvadrat nazad u akumulator
+215 ADD 257 - dodamo mu i b na kvadrat (unutra je sad a*a + b*b)
+216 ADD 255 - dodacemo 100 koju smo vec inicijalizovali na lokaciji 255
+217 STA 253 - kao i prije nas izraz ide u adresu spremljenu za to (upisujemo u y)
+218 HLT     - zavrsavamo program i zaustavljamo rad
+
+; podaci i konstante glavnog programa:
+250 DEC 45  - a
+251 DEC 30  - b
+252 DEC -32 - c
+253 DEC 0   - rezultat y
+254 DEC 10  - konstanta 10 koja nam treba za prvi slucaj
+255 DEC 100 - konstanta 100 koja nam treba za drugi slucaj
+256 DEC 0   - pomocna lokacija gdje cuvamo kvadrat a
+257 DEC 0   - pomocna lokacija gdje cuvamo kvadrat b
+
+
+; sada nam fali jos potprogram za kvadrat (mnozenje broja sa samim sobom):
+
+300 DEC 0   - ovdje cuvamo adresu originalne radnje (povratnu adresu u glavni program)
+; a potprogram pocinje od adrese potprograma+1 (odnosno od adrese 301)
+301 STA 348 - ucitacemo nas argument iz akumulatora i sacuvati ga na lokaciju 348
+
+302 LDA 348 - ucitavamo nas argument ponovo na pocetku uslova petlje
+303 CMA     - komplementiramo ga i dobijamo -argument sto nam sluzi za poredjenje
+304 ADD 349 - dodacemo trenutnu vrijednost i (unutra je sad i - argument)
+305 SNA     - u slucaju da je akumulator negativan (i je manje od argument), idemo u petlju
+306 BUN 316 - skok na kraj petlje, ako i postane jednako argumentu (rezultat bude 0 i SNA ne pukne)
+
+307 BUN 312 - skok na tijelo petlje, ako je uslov prosao i akumulator je negativan
+
+308 LDA 349 - ucitavamo nas brojac i iz memorije
+309 INC     - povecati ga za 1 (i++)
+310 STA 349 - cuvamo novo i na lokaciji gdje je bilo staro i
+311 BUN 302 - skok na pocetak, vracamo se na adresu 302 da opet provjerimo uslov petlje
+
+312 LDA 350 - tijelo petlje, ucitavamo dosadasnji rezultat koji imamo (na pocetku je 0)
+313 ADD 348 - dodacemo mu nas argument (tako radimo uzastopno sabiranje)
+314 STA 350 - sacuvacemo taj novi privremeni rezultat nazad na lokaciju 350
+315 BUN 308 - skok na uvecanje brojača, idemo na adresu 308 da odradimo i++
+
+316 LDA 350 - kraj petlje, ucitavamo konacan rezultat mnozenja iz memorije u akumulator
+317 BUN 300 I - vracamo se nazad u glavni program koristeci indirektan skok preko adrese 300
+
+; podaci potprograma:
+348 DEC 0   - argument funkcije (broj koji zelimo da kvadriramo)
+349 DEC 0   - brojac petlje i koji ide od 0 na gore
+350 DEC 0   - lokacija rez gdje sakupljamo sumu uzastopnog sabiranja
