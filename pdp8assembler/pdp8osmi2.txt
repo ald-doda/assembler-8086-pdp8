@@ -1,0 +1,30 @@
+; GLAVNI PROGRAM (Varijanta 2 - preko memorije)
+; cilj nam je da pripremimo argumente na dogovorenim lokacijama u memoriji prije poziva funkcije
+
+205 LDA 250 - ucitavamo nas broj 'a' (15) u akumulator
+206 STA 348 - upisujemo ga na dogovorenu lokaciju 348 koju nas potprogram koristi kao prvi argument
+207 LDA 251 - ucitavamo nas broj 'b' (25) u akumulator
+208 STA 349 - upisujemo ga na drugu dogovorenu lokaciju 349 za drugi argument
+209 BSA 320 - pozivamo potprogram 'zbir' koji se nalazi na adresi 320
+210 LDA 350 - potprogram je zavrsio i mi ucitavamo konacan zbir iz dogovorene lokacije 350 u akumulator
+211 STA 252 - cuvamo taj zbir u nasu promenljivu y na lokaciju 252
+212 OUT - saljemo zbir na ekran da se prikaze
+213 HLT - zavrsavamo glavni program
+
+; podaci glavnog programa:
+250 DEC 15 - prvi dvocifreni broj 'a'
+251 DEC 25 - drugi dvocifreni broj 'b'
+252 DEC 0 - lokacija za rezultat 'y'
+
+
+; POTPROGRAM 'zbir' (Varijanta 2)
+320 DEC 0 - ovdje se cuva povratna adresa u glavni program (adresa 210)
+321 LDA 348 - potprogram ucitava prvi argument sa dogovorene lokacije 348
+322 ADD 349 - dodaje mu drugi argument sa dogovorene lokacije 349 (unutra je sad zbir)
+323 STA 350 - upisuje taj konacan rezultat na dogovorenu lokaciju 350 da ga glavni program pokupi
+324 BUN 320 I - vracamo se nazad u glavni program preko adrese sacuvane u 320
+
+; dogovorene lokacije za komunikaciju (interfejs funkcije):
+348 DEC 0 - prostor za prvi argument
+349 DEC 0 - prostor za drugi argument
+350 DEC 0 - prostor za rezultat funkcije

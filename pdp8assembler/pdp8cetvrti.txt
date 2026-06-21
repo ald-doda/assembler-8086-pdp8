@@ -1,0 +1,63 @@
+; Zadatak: Inicijalizacija niza od 10 elemenata od adrese 202 (skok po 2)
+; Na kraju prikazati niz na ekranu, jedan element u jednom redu.
+; Cilj nam je da napunimo niz vrijednošću sa adrese 200, a onda da ga odštampamo.
+
+201 LDA 251 - unijecemo duzinu niza n (10) u akumulator
+202 CMA - i dobicemo -n sto nam sluzi da ga uporedimo sa nasim brojacem j
+203 ADD 252 - dodacemo trenutnu vrijednost j (unutra je sad j - n)
+204 SNA - u slucaju da je akumulator negativan (j je i dalje manje od n), idemo u prvu petlju
+205 BUN 215 - ako j dodje do 10, uslov pada jer su jednaki i iskacemo iz punjenja na stampanje (adresa 215)
+
+; popunjavamo niz:
+206 LDA 250 - ucitavamo pocetnu adresu niza (broj 202) u akumulator
+207 ADD 253 - dodacemo joj nas pomjeraj za adresu (na pocetku je 0, pa 2, pa 4...)
+208 STA 255 - i sacuvacemo tu izracunatu adresu tekuceg clana u lokaciju 255
+209 LDA 200 - ucitavamo vrijednost iz lokacije 200 kojom treba da inicijalizujemo cijeli niz
+210 STA* 255 - INDIREKTNO: idemo na adresu koja pise u 255 i tamo upisujemo tu vrijednost u niz
+211 LDA 253 - ucitavamo nas pomjeraj adrese (koji skace po 2)
+212 ADD 256 - dodacemo mu konstantu 2 jer adrese u nizu idu kao 202, 204, 206...
+213 STA 253 - cuvamo taj novi pomjeraj nazad na lokaciju 253
+214 BUN 201 - i vracamo se na adresu 201 da uvecamo i provjerimo brojac j i vidimo idemo li opet
+
+; ovdje vracamo brojac na staro zbog stampe
+215 LDA 257 - ucitavamo nulu u akumulator da resetujemo nase promenljive
+216 STA 252 - vracamo brojac j na 0 da bismo mogli ispocetka da brojimo od 0 do 10 za stampu
+217 STA 253 - vracamo i pomjeraj adrese na 0 da ponovo krenemo od prvog clana (adresa 202)
+
+; stampamo niz na sljedeci nacin:
+218 LDA 251 - ponovo ucitavamo duzinu niza (10) za provjeru uslova druge petlje
+219 CMA - dobijamo -n za poredjenje
+220 ADD 252 - dodajemo trenutno j (unutra je opet j - n)
+221 SNA - ako je akumulator negativan (j < 10), idemo unutra da stampamo
+222 BUN 234 - ako smo odstampali svih 10 clanova, SNA ne radi i idemo na kraj programa (adresa 234)
+223 LDA 250 - ucitavamo pocetnu adresu niza (202) u akumulator
+224 ADD 253 - dodacemo joj trenutni pomjeraj adrese iz 253
+225 STA 255 - i sacuvacemo adresu tog clana koji stampamo u lokaciju 255
+226 LDA* 255 - INDIREKTNO: hvatamo pravi broj iz niza preko adrese zapisane u 255
+227 OUT - saljemo taj broj u OUTR registar da se prikaze na ekranu
+228 LDA 254 - ucitavamo konstantu 10 (ASCII kod za Line Feed / novi red)
+229 OUT - stampamo taj novi red tako da ce sledeci broj ici direktno ispod njega
+230 LDA 253 - ucitavamo nas pomjeraj adrese
+231 ADD 256 - dodacemo mu opet 2 da u sledecem krugu skocimo na sledeci clan niza
+232 STA 253 - cuvamo novi pomjeraj na lokaciju 253
+233 BUN 218 - vracamo se na adresu 218 da uvecamo j i provjerimo uslov za sledeci krug stampe
+234 HLT - gasimo program jer je sve napunjeno i odstampano
+
+
+; adrese vezane za zadatak
+200 DEC 55 - vrijednost kojom inicijalizujemo niz (ti mozes staviti bilo koji broj, npr. 55)
+250 DEC 202 - pocetna adresa niza (fiksno unijeto kako trazi zadatak)
+251 DEC 10 - duzina niza n (broj elemenata)
+252 DEC 0 - nas brojac j koji ide od 0 do 9 (koristimo ga u obije petlje, uvecava se automatski)
+253 DEC 0 - pomjeraj adrese kroz niz (skace 0, 2, 4, 6... jer adrese idu po dva mjesta unaprijed)
+254 DEC 10 - ASCII konstanta za novi red (Line Feed) koja nam prebacuje kursor u sljedeci red na ekranu
+255 DEC 0 - pomocna lokacija gdje racunamo i cuvamo adresu tekuceg clana niza za indirektno citanje
+256 DEC 2 - konstanta 2 kojom uvecavamo nas pomjeraj adrese u svakom krugu
+257 DEC 0 - konstanta 0 koja nam sluzi da resetujemo j i pomjeraj izmedju dvije petlje
+
+; memorisjek adrese niza
+202 DEC 0 - prvi clan niza
+204 DEC 0 - drugi clan niza (adresa skace za 2 jer je niz cijelih brojeva)
+206 DEC 0 - treci clan niza
+; ... - i tako dalje kroz memoriju do desetog clana
+220 DEC 0 - deseti (poslednji) clan niza

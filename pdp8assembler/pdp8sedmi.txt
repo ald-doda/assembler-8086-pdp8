@@ -1,0 +1,42 @@
+; a := 0
+; for a := 0 to 9 do
+; begin
+; z := x
+; x := x + 1
+; end;
+; cilj nam je da vrtimo petlju 10 puta, u svakom krugu z prima vrijednost x, a x raste za 1
+
+203 LDA 251 - ucitavamo gornju granicu petlje (broj 10) u akumulator
+204 CMA - i dobicemo -10 sto nam sluzi za poredjenje sa nasim brojacem a
+205 ADD 204 - dodacemo trenutnu vrijednost brojaca a (unutra je sad a - 10)
+206 SNA - u slucaju da je akumulator negativan (a je manje od 10), idemo u petlju
+207 BUN 216 - ako a postane 10, uslov pada jer su jednaki (rezultat je 0) i skacemo na stampanje (adresa 216)
+
+; glavni dio wannabe for petlje
+208 LDA 200 - ucitavamo trenutnu vrijednost x (na pocetku je 20)
+209 STA 202 - i sacuvacemo je u z -> z := x
+210 INC - povecavamo vrijednost x koja nam je vec u akumulatoru za 1 (x + 1)
+211 STA 200 - i upisujemo to novo uvecano x nazad na njegovu lokaciju 200
+
+; povecavamo brojac
+212 LDA 204 - ucitavamo nas brojac petlje a
+213 INC - povecavamo ga za 1
+214 STA 204 - cuvamo novo a na lokaciju 204
+215 BUN 203 - i vracamo se na adresu 203 da ponovo provjerimo uslov for petlje
+
+; stampanje rezultata
+216 LDA 200 - ucitavamo konacnu vrijednost x u akumulator
+217 OUT - saljemo je u OUTR registar da se prikaze na ekranu
+218 LDA 250 - ucitavamo konstantu 10 (ASCII za novi red) da razdvojimo ispis
+219 OUT - stampamo novi red
+220 LDA 202 - ucitavamo konacnu vrijednost z u akumulator
+221 OUT - saljemo i nju na ekran da se prikaze ispod x
+222 HLT - gasimo program jer je sve odradjeno
+
+
+; memorijske adrese
+200 DEC 20 - lokacija za x (inicijalizovano na dekadno 20)
+202 DEC 11 - lokacija za z (inicijalizovano na dekadno 11, bice prebrisano)
+204 DEC 0 - lokacija za nas brojac petlje a (krece od 0)
+250 DEC 10 - ASCII konstanta za novi red (Line Feed)
+251 DEC 10 - konstanta 10 koja nam predstavlja broj ponavljanja petlje (od 0 do 9 je 10 krugova)

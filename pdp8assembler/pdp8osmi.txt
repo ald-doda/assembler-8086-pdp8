@@ -1,0 +1,19 @@
+; GLAVNI PROGRAM (Varijanta 1 - preko registara)
+; cilj nam je da prenesemo prvi sabirak preko akumulatora, pozovemo potprogram, i odstampamo zbir
+
+200 LDA 250 - ucitavamo prvi broj 'a' (dekadno 15) direktno u akumulator (AC)
+201 BSA 300 - pozivamo potprogram 'zbir' koji je na adresi 300 (u AC se vec nalazi 'a')
+202 STA 252 - potprogram nam je vratio zbir u akumulatoru, i mi ga cuvamo u lokaciju za rezultat y
+203 OUT - saljemo taj konacan zbir iz akumulatora na ekran da se prikaze
+204 HLT - zavrsavamo glavni program
+
+; podaci glavnog programa:
+250 DEC 15 - prvi dvocifreni broj 'a'
+251 DEC 25 - drugi dvocifreni broj 'b'
+252 DEC 0 - lokacija za rezultat 'y' (ovdje ce na kraju biti 40)
+
+
+; POTPROGRAM 'zbir' (Varijanta 1)
+300 DEC 0 - ovdje BSA automatski cuva povratnu adresu u glavni program (adresa 202)
+301 ADD 251 - postojecem broju 'a' koji je vec bio u akumulatoru dodajemo broj 'b' sa adrese 251
+302 BUN 300 I - vracamo se nazad u glavni program sa konacnim zbirom u akumulatoru

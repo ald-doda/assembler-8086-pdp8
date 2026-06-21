@@ -1,0 +1,58 @@
+; Zadatak 2: Kopiranje elemenata jednog niza u drugi (adrese skacu za po 2)
+; cilj nam je da idemo kroz Niz 1, uzimamo elemente i prepisujemo ih na odgovarajuca mjesta u Niz 2
+; ovo je petlja gdje koristimo brojac j koji ide od 0 do 10 da bismo iskopirali svih 10 clanova
+
+200 LDA 261 - unijecemo duzinu niza n (10) u akumulator
+201 CMA - i dobicemo -n sto nam sluzi da ga uporedimo sa nasim brojacem j
+202 ADD 262 - dodacemo trenutnu vrijednost j (unutra je sad j - n)
+203 SNA - u slucaju da je akumulator negativan (j je i dalje manje od n), idemo u petlju za kopiranje
+204 BUN 216 - ako j postane 10, uslov pada jer su jednaki i iskacemo iz petlje na kraj programa (adresa 216)
+
+; kopiramo, stimulacija petlje:
+205 LDA 250 - ucitavamo pocetnu adresu prvog niza (broj 220) u akumulator
+206 ADD 263 - dodacemo joj nas trenutni pomjeraj adrese (0, 2, 4, 6...) da nadjemo adresu clana koji kopiramo
+207 STA 265 - i sacuvacemo tu izracunatu adresu iz prvog niza u lokaciju 265
+208 LDA* 265 - INDIREKTNO: idemo na adresu koja pise u 265 i uzimamo pravi broj iz prvog niza u akumulator
+209 STA 267 - privremeno sklanjamo taj broj u lokaciju 267 jer nam akumulator treba za racunanje adrese drugog niza
+
+210 LDA 251 - ucitavamo pocetnu adresu drugog niza (broj 240) u akumulator
+211 ADD 263 - dodacemo joj isti taj pomjeraj adrese iz 263 (da bismo pogodili tacno mjesto u drugom nizu)
+212 STA 266 - i sacuvacemo tu izracunatu adresu iz drugog niza u lokaciju 266
+213 LDA 267 - vracamo nas broj koji smo kopirali nazad u akumulator
+214 STA* 266 - INDIREKTNO: upisujemo taj broj na adresu drugog niza koja je zapisana u lokaciji 266
+
+; ovdje pratimo brojac:
+215 LDA 263 - ucitavamo nas pomjeraj adrese
+216 ADD 264 - dodacemo mu konstantu 2 jer adrese u oba niza idu po dva mjesta unaprijed (220->222, 240->242...)
+217 STA 263 - cuvamo taj novi pomjeraj nazad na lokaciju 263
+218 LDA 262 - ucitavamo nas brojac j
+219 INC - povecavamo ga za 1 (j++)
+220 STA 262 - cuvamo novo j na lokaciji 262
+221 BUN 200 - i vracamo se na adresu 200 da ponovo provjerimo uslov i vidimo ima li jos clanova za kopiranje
+222 HLT - gasimo program jer su svi elementi uspjesno prebačeni iz prvog u drugi niz
+
+
+; ovdje se cuvaju adrese za zadatak
+250 DEC 220 - pocetna adresa prvog niza (Niz 1)
+251 DEC 240 - pocetna adresa drugog niza (Niz 2)
+261 DEC 10 - duzina niza n (broj elemenata za kopiranje)
+262 DEC 0 - nas brojac j koji ide od 0 do 9 (uvecava se za 1 u svakom krugu)
+263 DEC 0 - pomjeraj adrese kroz niz (skace 0, 2, 4, 6... jer su adrese cijelih brojeva razmaknute po 2)
+264 DEC 2 - konstanta 2 kojom uvecavamo nas pomjeraj adrese u svakom krugu
+265 DEC 0 - pomocna lokacija gdje racunamo i cuvamo adresu tekuceg clana iz prvog niza
+266 DEC 0 - pomocna lokacija gdje racunamo i cuvamo adresu tekuceg clana iz drugog niza
+267 DEC 0 - pomocna lokacija gdje privremeno cuvamo broj koji se kopira dok racunamo drugu adresu
+
+; adrese prvog niza
+220 DEC 12 - prvi clan prvog niza
+222 DEC -5 - drugi clan prvog niza (adresa skace za 2)
+224 DEC 84 - treci clan prvog niza
+; ... - i tako dalje kroz memoriju do desetog clana
+238 DEC 19 - deseti (poslednji) clan prvog niza
+
+; adrese drugog niza
+240 DEC 0 - ovdje ce se iskopirati prvi clan (postace 12)
+242 DEC 0 - ovdje ce se iskopirati drugi clan (postace -5)
+244 DEC 0 - ovdje ce se iskopirati treci clan (postace 84)
+; ... - i tako dalje
+258 DEC 0 - ovdje ce se iskopirati deseti clan (postace 19)

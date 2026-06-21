@@ -1,0 +1,44 @@
+; if (((x + 4) <> (y * 2)) and (x < 10)) then z := x + y
+; else z := 0
+; cilj nam je da provjerimo oba uslova, ako oba prodju racunamo x+y, a ako ijedan padne z postaje 0
+
+205 LDA 200 - ucitavamo vrijednost x (23) u akumulator
+206 ADD 250 - dodacemo konstantu 4 da dobijemo izraz (x + 4)
+207 STA 254 - privremeno cemo sacuvati taj rezultat (x + 4) u lokaciju 254
+208 LDA 202 - ucitavamo vrijednost y (45) u akumulator
+209 ADD 202 - dodacemo y na samog sebe sto nam menja mnozenje sa 2 (y * 2)
+210 CMA - komplementiramo taj rezultat da bismo mogli da ga uporedimo oduzimanjem
+211 ADD 254 - dodajemo onaj nas prvi izraz (x + 4) -> unutra je sad (x + 4) - (y * 2)
+212 SZA - Skip if Zero: ako je rezultat 0, znaci da su izrazi JEDNAKI. Posto nama treba da su RAZLICITI (<>), ako su jednaki uslov pada pa cemo preskociti sledecu naredbu
+213 BUN 216 - ako su razliciti (rezultat nije 0), prvi uslov je prosao i skacemo na proveru drugog uslova (adresa 216)
+214 BUN 224 - ako su bili jednaki, uslov je pao i skacemo direktno na ELSE dio (adresa 224)
+
+; drugi uslov:
+216 LDA 251 - ucitavamo konstantu 10 u akumulator
+217 CMA - komplementiramo je da dobijemo -10 za poredjenje
+218 ADD 200 - dodacemo nas x -> unutra je sad x - 10
+219 SNA - Skip if Negative: ako je x - 10 negativno, to znaci da je x manje od 10 pa idemo u THEN dio
+220 BUN 224 - ako x nije manje od 10 (rezultat je 0 ili pozitivan), uslov pada i skacemo na ELSE dio
+
+; ovdje gledamo ako je ok, then dio od if
+221 LDA 200 - ucitavamo x u akumulator
+222 ADD 202 - dodacemo y na to (dobijamo x + y)
+223 BUN 226 - skacemo na adresu 226 da to sacuvamo u z i preskocimo else dio
+
+; else dio
+224 LDA 252 - ucitavamo konstantu 0 u akumulator
+
+; kraj i stampa:
+226 STA 204 - upisujemo konacan rezultat (bio on x+y ili 0) u lokaciju za z (adresa 204)
+227 OUT - saljemo vrijednost z iz akumulatora u OUTR registar da se prikaze na ekranu
+228 HLT - zavrsavamo program jer je sve izracunato i prikazano
+
+
+; ovdje cuvamo memorijske lokacije
+200 DEC 23 - lokacija za x (inicijalizovano na dekadno 23)
+202 DEC 45 - lokacija za y (inicijalizovano na dekadno 45)
+204 DEC 0 - lokacija za z (ovdje ce biti konacan rezultat)
+250 DEC 4 - konstanta 4 koja nam treba za prvi izraz
+251 DEC 10 - konstanta 10 koja nam treba za proveru drugog uslova
+252 DEC 0 - konstanta 0 kojom ponistavamo z u else dijelu
+254 DEC 0 - pomocna lokacija za privremeno cuvanje izraza (x + 4)
